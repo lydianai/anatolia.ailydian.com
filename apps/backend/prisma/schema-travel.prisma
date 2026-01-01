@@ -1,0 +1,906 @@
+//================================================================================
+// ANATOLIA TRAVEL - Premium Turkey Holiday Platform
+// Database Schema - PostgreSQL + Prisma
+// Transformed from: ANADOLU REALM (Game) → ANATOLIA TRAVEL (Travel Platform)
+// AI System: AILYDIAN Orchestrator + Manus AI
+// Date: 2026-01-01
+//================================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/client-travel"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//================================================================================
+// AUTHENTICATION & USER MANAGEMENT
+//================================================================================
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  username        String?   @unique
+  password        String
+  firstName       String?
+  lastName        String?
+  phone           String?
+  avatar          String?
+  language        Language  @default(EN)
+  currency        Currency  @default(EUR)
+  role            UserRole  @default(CUSTOMER)
+
+  // Verification & Security
+  isActive        Boolean   @default(true)
+  isVerified      Boolean   @default(false)
+  emailVerifiedAt DateTime?
+  phoneVerifiedAt DateTime?
+  twoFactorEnabled Boolean  @default(false)
+
+  // Activity
+  lastLoginAt     DateTime?
+  lastLoginIp     String?
+  loginCount      Int       @default(0)
+
+  // Preferences
+  newsletter      Boolean   @default(true)
+  smsNotifications Boolean  @default(false)
+  preferences     Json?     // Travel preferences (budget, style, interests)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  bookings        Booking[]
+  reviews         Review[]
+  wishlist        WishlistItem[]
+  paymentMethods  PaymentMethod[]
+  supportTickets  SupportTicket[]
+
+  @@index([email])
+  @@index([phone])
+  @@index([role])
+  @@map("users")
+}
+
+enum UserRole {
+  CUSTOMER
+  AGENT
+  PARTNER
+  MODERATOR
+  ADMIN
+}
+
+enum Language {
+  TR  // Turkish
+  EN  // English
+  DE  // German
+  AR  // Arabic
+  RU  // Russian
+  ZH  // Chinese
+}
+
+enum Currency {
+  TRY // Turkish Lira
+  EUR // Euro
+  USD // US Dollar
+  GBP // British Pound
+  RUB // Russian Ruble
+  CNY // Chinese Yuan
+}
+
+//================================================================================
+// DESTINATIONS & GEOGRAPHY
+//================================================================================
+
+model Destination {
+  id              String    @id @default(uuid())
+  slug            String    @unique
+  name            String
+  nameTranslations Json?    // {tr: "", en: "", de: "", ar: "", ru: "", zh: ""}
+  description     String?
+  descriptionTranslations Json?
+
+  // Geography
+  country         String    @default("Turkey")
+  region          Region
+  city            String?
+  latitude        Float
+  longitude       Float
+  timezone        String    @default("Europe/Istanbul")
+
+  // Media
+  coverImage      String?
+  images          String[]  // Array of image URLs
+  videos          String[]  // Array of video URLs
+  virtualTourUrl  String?   // 360° tour URL
+
+  // SEO & Discovery
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String[]
+  featured        Boolean   @default(false)
+  popular         Boolean   @default(false)
+  trending        Boolean   @default(false)
+
+  // Statistics
+  viewCount       Int       @default(0)
+  bookingCount    Int       @default(0)
+  averageRating   Float     @default(0)
+  reviewCount     Int       @default(0)
+
+  // Status
+  isActive        Boolean   @default(true)
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  attractions     Attraction[]
+  hotels          Hotel[]
+  tours           Tour[]
+  reviews         Review[]
+
+  @@index([slug])
+  @@index([region])
+  @@index([featured, popular, trending])
+  @@index([isActive])
+  @@map("destinations")
+}
+
+enum Region {
+  MARMARA          // Istanbul, Bursa, Edirne
+  AEGEAN           // Izmir, Bodrum, Çeşme
+  MEDITERRANEAN    // Antalya, Alanya, Kaş
+  CENTRAL          // Ankara, Cappadocia, Konya
+  BLACK_SEA        // Trabzon, Samsun
+  EASTERN          // Erzurum, Van
+  SOUTHEASTERN     // Gaziantep, Şanlıurfa
+}
+
+model Attraction {
+  id              String    @id @default(uuid())
+  destinationId   String
+  slug            String    @unique
+  name            String
+  nameTranslations Json?
+  description     String?
+  descriptionTranslations Json?
+
+  // Type & Category
+  type            AttractionType
+  category        String[]  // ["Historical", "Cultural", "Natural", "Religious"]
+
+  // Location
+  address         String?
+  latitude        Float
+  longitude       Float
+
+  // Media
+  coverImage      String?
+  images          String[]
+  videos          String[]
+
+  // Practical Info
+  openingHours    Json?     // {monday: "09:00-18:00", ...}
+  entranceFee     Float?    // in TRY
+  duration        Int?      // Recommended visit duration in minutes
+  accessibility   String[]  // ["wheelchair", "elevator", "guide_dog"]
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  featured        Boolean   @default(false)
+
+  // Statistics
+  viewCount       Int       @default(0)
+  averageRating   Float     @default(0)
+  reviewCount     Int       @default(0)
+
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  destination     Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@index([destinationId])
+  @@index([type])
+  @@index([featured])
+  @@map("attractions")
+}
+
+enum AttractionType {
+  LANDMARK
+  MUSEUM
+  MOSQUE
+  CHURCH
+  PALACE
+  CASTLE
+  BEACH
+  PARK
+  MARKET
+  RESTAURANT
+  NIGHTLIFE
+  SHOPPING
+}
+
+//================================================================================
+// ACCOMMODATIONS
+//================================================================================
+
+model Hotel {
+  id              String    @id @default(uuid())
+  destinationId   String
+  slug            String    @unique
+  name            String
+  nameTranslations Json?
+  description     String?
+  descriptionTranslations Json?
+
+  // Classification
+  stars           Int       // 1-5
+  type            HotelType
+  chain           String?   // Hotel chain name
+
+  // Location
+  address         String
+  latitude        Float
+  longitude       Float
+  distanceToCenter Float?   // km
+  distanceToAirport Float?  // km
+  distanceToBeach Float?    // km
+
+  // Contact
+  phone           String?
+  email           String?
+  website         String?
+
+  // Media
+  coverImage      String?
+  images          String[]
+  videos          String[]
+  virtualTourUrl  String?
+
+  // Amenities
+  amenities       String[]  // ["wifi", "pool", "spa", "gym", "parking", ...]
+
+  // Check-in/out
+  checkInTime     String    @default("14:00")
+  checkOutTime    String    @default("12:00")
+
+  // Policies
+  cancellationPolicy Json?
+  childPolicy     Json?
+  petPolicy       Json?
+  smokingPolicy   String?
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  featured        Boolean   @default(false)
+  verified        Boolean   @default(false)
+
+  // Statistics
+  viewCount       Int       @default(0)
+  bookingCount    Int       @default(0)
+  averageRating   Float     @default(0)
+  reviewCount     Int       @default(0)
+
+  // Partner Info
+  partnerId       String?
+  commissionRate  Float?    // Percentage
+
+  isActive        Boolean   @default(true)
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  destination     Destination @relation(fields: [destinationId], references: [id])
+  rooms           HotelRoom[]
+  bookings        Booking[]
+  reviews         Review[]
+
+  @@index([destinationId])
+  @@index([stars])
+  @@index([type])
+  @@index([featured, verified])
+  @@map("hotels")
+}
+
+enum HotelType {
+  HOTEL
+  RESORT
+  BOUTIQUE
+  APARTMENT
+  VILLA
+  HOSTEL
+  GUESTHOUSE
+  BED_AND_BREAKFAST
+  APART_HOTEL
+}
+
+model HotelRoom {
+  id              String    @id @default(uuid())
+  hotelId         String
+  name            String    // "Deluxe Sea View Room"
+  nameTranslations Json?
+  description     String?
+  descriptionTranslations Json?
+
+  // Room Type
+  roomType        RoomType
+  bedType         String[]  // ["king", "queen", "single", "sofa_bed"]
+  maxOccupancy    Int       // Maximum guests
+  size            Float?    // Square meters
+  view            String[]  // ["sea", "mountain", "city", "pool", "garden"]
+
+  // Amenities
+  amenities       String[]  // ["balcony", "minibar", "tv", "safe", ...]
+
+  // Media
+  images          String[]
+
+  // Pricing
+  basePrice       Float     // Per night in TRY
+  weekendPrice    Float?
+  seasonalPricing Json?     // {summer: 1500, winter: 1000}
+
+  // Availability
+  totalRooms      Int       @default(1)
+
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  hotel           Hotel     @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  bookings        Booking[]
+
+  @@index([hotelId])
+  @@index([roomType])
+  @@index([isActive])
+  @@map("hotel_rooms")
+}
+
+enum RoomType {
+  STANDARD
+  DELUXE
+  SUITE
+  FAMILY
+  VILLA
+  PENTHOUSE
+  STUDIO
+}
+
+//================================================================================
+// TOURS & EXPERIENCES
+//================================================================================
+
+model Tour {
+  id              String    @id @default(uuid())
+  destinationId   String
+  slug            String    @unique
+  name            String
+  nameTranslations Json?
+  description     String?
+  descriptionTranslations Json?
+
+  // Tour Details
+  type            TourType
+  category        String[]  // ["Cultural", "Adventure", "Food", "Historical"]
+  duration        Int       // Duration in hours
+  language        String[]  // Available languages
+  groupSize       Int       @default(15) // Max group size
+  difficulty      Difficulty @default(EASY)
+
+  // Itinerary
+  itinerary       Json      // Detailed day-by-day plan
+  highlights      String[]  // Key highlights
+  included        String[]  // What's included
+  excluded        String[]  // What's not included
+
+  // Logistics
+  pickupIncluded  Boolean   @default(false)
+  pickupLocations String[]
+  meetingPoint    String?
+
+  // Media
+  coverImage      String?
+  images          String[]
+  videos          String[]
+
+  // Pricing
+  adultPrice      Float     // in TRY
+  childPrice      Float?
+  infantPrice     Float?
+
+  // Availability
+  schedule        Json?     // {monday: true, tuesday: false, ...}
+  startTimes      String[]  // ["09:00", "14:00"]
+
+  // Requirements
+  minAge          Int?
+  physicalRequirements String?
+  whatToBring     String[]
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  featured        Boolean   @default(false)
+
+  // Statistics
+  viewCount       Int       @default(0)
+  bookingCount    Int       @default(0)
+  averageRating   Float     @default(0)
+  reviewCount     Int       @default(0)
+
+  // Provider
+  providerId      String?
+  commissionRate  Float?
+
+  isActive        Boolean   @default(true)
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  destination     Destination @relation(fields: [destinationId], references: [id])
+  bookings        Booking[]
+  reviews         Review[]
+
+  @@index([destinationId])
+  @@index([type])
+  @@index([featured])
+  @@index([isActive])
+  @@map("tours")
+}
+
+enum TourType {
+  DAY_TRIP
+  MULTI_DAY
+  WALKING
+  BUS_TOUR
+  BOAT_TOUR
+  FOOD_TOUR
+  WINE_TASTING
+  ADVENTURE
+  CULTURAL
+  PHOTOGRAPHY
+  PRIVATE
+  GROUP
+}
+
+enum Difficulty {
+  EASY
+  MODERATE
+  CHALLENGING
+  EXTREME
+}
+
+//================================================================================
+// BOOKINGS & RESERVATIONS
+//================================================================================
+
+model Booking {
+  id              String    @id @default(uuid())
+  bookingNumber   String    @unique
+  userId          String
+
+  // Booking Type
+  type            BookingType
+  hotelId         String?
+  roomId          String?
+  tourId          String?
+
+  // Dates
+  checkIn         DateTime?
+  checkOut        DateTime?
+  tourDate        DateTime?
+
+  // Guests
+  adults          Int       @default(1)
+  children        Int       @default(0)
+  infants         Int       @default(0)
+
+  // Pricing
+  baseAmount      Float     // Original price
+  discountAmount  Float     @default(0)
+  taxAmount       Float     @default(0)
+  totalAmount     Float     // Final amount in TRY
+  currency        Currency  @default(TRY)
+  exchangeRate    Float     @default(1)
+
+  // Payment
+  paymentStatus   PaymentStatus @default(PENDING)
+  paymentMethod   String?   // "credit_card", "bank_transfer", "paypal"
+  paymentIntentId String?   // Stripe payment intent ID
+  paidAt          DateTime?
+
+  // Guest Information
+  guestInfo       Json      // {firstName, lastName, email, phone, ...}
+  specialRequests String?
+
+  // Status
+  status          BookingStatus @default(PENDING)
+  confirmedAt     DateTime?
+  cancelledAt     DateTime?
+  cancellationReason String?
+  refundAmount    Float?
+  refundedAt      DateTime?
+
+  // Communication
+  confirmationSent Boolean  @default(false)
+  reminderSent    Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id])
+  hotel           Hotel?    @relation(fields: [hotelId], references: [id])
+  room            HotelRoom? @relation(fields: [roomId], references: [id])
+  tour            Tour?     @relation(fields: [tourId], references: [id])
+  payment         Payment?
+
+  @@index([userId])
+  @@index([bookingNumber])
+  @@index([type])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([checkIn, checkOut])
+  @@map("bookings")
+}
+
+enum BookingType {
+  HOTEL
+  TOUR
+  PACKAGE
+  TRANSFER
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+model Payment {
+  id              String    @id @default(uuid())
+  bookingId       String    @unique
+
+  // Stripe Integration
+  stripePaymentId String?   @unique
+  stripeCustomerId String?
+  stripeInvoiceId String?
+
+  // Amount
+  amount          Float     // in smallest currency unit (cents)
+  currency        Currency  @default(TRY)
+
+  // Method
+  method          PaymentMethod
+  cardBrand       String?   // "visa", "mastercard", "amex"
+  cardLast4       String?
+
+  // Status
+  status          PaymentStatus
+  failureReason   String?
+
+  // Refund
+  refundAmount    Float?
+  refundedAt      DateTime?
+  refundReason    String?
+
+  // Metadata
+  metadata        Json?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  booking         Booking   @relation(fields: [bookingId], references: [id])
+
+  @@index([stripePaymentId])
+  @@index([status])
+  @@map("payments")
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  PAYPAL
+  APPLE_PAY
+  GOOGLE_PAY
+}
+
+model PaymentMethod {
+  id              String    @id @default(uuid())
+  userId          String
+
+  // Stripe
+  stripePaymentMethodId String @unique
+
+  // Card Details
+  type            String    // "card"
+  cardBrand       String    // "visa", "mastercard"
+  cardLast4       String
+  cardExpMonth    Int
+  cardExpYear     Int
+
+  // Billing
+  billingName     String?
+  billingEmail    String?
+  billingAddress  Json?
+
+  isDefault       Boolean   @default(false)
+  isActive        Boolean   @default(true)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([stripePaymentMethodId])
+  @@map("payment_methods")
+}
+
+//================================================================================
+// REVIEWS & RATINGS
+//================================================================================
+
+model Review {
+  id              String    @id @default(uuid())
+  userId          String
+
+  // Review Target
+  destinationId   String?
+  hotelId         String?
+  tourId          String?
+
+  // Ratings (1-5)
+  overallRating   Float
+  locationRating  Float?
+  serviceRating   Float?
+  cleanlinessRating Float?
+  valueRating     Float?
+  amenitiesRating Float?
+
+  // Content
+  title           String?
+  content         String
+  pros            String[]
+  cons            String[]
+
+  // Media
+  images          String[]
+
+  // Metadata
+  travelType      String?   // "business", "couple", "family", "solo", "friends"
+  visitDate       DateTime?
+
+  // Moderation
+  status          ReviewStatus @default(PENDING)
+  isVerified      Boolean   @default(false)
+  moderatedAt     DateTime?
+  moderatorNotes  String?
+
+  // Engagement
+  helpfulCount    Int       @default(0)
+  reportCount     Int       @default(0)
+
+  // Response
+  ownerResponse   String?
+  ownerRespondedAt DateTime?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User        @relation(fields: [userId], references: [id])
+  destination     Destination? @relation(fields: [destinationId], references: [id])
+  hotel           Hotel?      @relation(fields: [hotelId], references: [id])
+  tour            Tour?       @relation(fields: [tourId], references: [id])
+
+  @@index([userId])
+  @@index([destinationId])
+  @@index([hotelId])
+  @@index([tourId])
+  @@index([status])
+  @@index([overallRating])
+  @@map("reviews")
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  FLAGGED
+}
+
+//================================================================================
+// WISHLIST & FAVORITES
+//================================================================================
+
+model WishlistItem {
+  id              String    @id @default(uuid())
+  userId          String
+
+  // Item Type
+  destinationId   String?
+  hotelId         String?
+  tourId          String?
+
+  notes           String?
+
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id])
+
+  @@unique([userId, destinationId])
+  @@unique([userId, hotelId])
+  @@unique([userId, tourId])
+  @@index([userId])
+  @@map("wishlist_items")
+}
+
+//================================================================================
+// SUPPORT & COMMUNICATION
+//================================================================================
+
+model SupportTicket {
+  id              String    @id @default(uuid())
+  ticketNumber    String    @unique
+  userId          String
+
+  // Ticket Info
+  subject         String
+  message         String
+  category        TicketCategory
+  priority        TicketPriority @default(MEDIUM)
+  status          TicketStatus @default(OPEN)
+
+  // Assignment
+  assignedToId    String?
+  assignedAt      DateTime?
+
+  // Resolution
+  resolvedAt      DateTime?
+  resolution      String?
+
+  // Communication
+  lastMessageAt   DateTime?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([ticketNumber])
+  @@index([status])
+  @@index([category])
+  @@map("support_tickets")
+}
+
+enum TicketCategory {
+  BOOKING
+  PAYMENT
+  CANCELLATION
+  TECHNICAL
+  GENERAL
+  COMPLAINT
+  SUGGESTION
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_USER
+  RESOLVED
+  CLOSED
+}
+
+//================================================================================
+// ANALYTICS & TRACKING
+//================================================================================
+
+model Analytics {
+  id              String    @id @default(uuid())
+
+  // Event
+  event           String    // "page_view", "search", "booking_start", "booking_complete"
+  category        String    // "engagement", "conversion", "error"
+
+  // User
+  userId          String?
+  sessionId       String
+
+  // Context
+  page            String?
+  referrer        String?
+  userAgent       String?
+  ipAddress       String?
+  country         String?
+  city            String?
+
+  // Data
+  metadata        Json?
+
+  timestamp       DateTime  @default(now())
+
+  @@index([event])
+  @@index([userId])
+  @@index([sessionId])
+  @@index([timestamp])
+  @@map("analytics")
+}
+
+//================================================================================
+// SYSTEM & CONFIGURATION
+//================================================================================
+
+model SystemConfig {
+  id              String    @id @default(uuid())
+  key             String    @unique
+  value           Json
+  description     String?
+
+  updatedAt       DateTime  @updatedAt
+
+  @@map("system_config")
+}
+
+model AuditLog {
+  id              String    @id @default(uuid())
+
+  // User
+  userId          String?
+  userEmail       String?
+
+  // Action
+  action          String    // "create", "update", "delete"
+  entity          String    // "booking", "user", "hotel"
+  entityId        String
+
+  // Changes
+  changes         Json?     // Before/after values
+
+  // Context
+  ipAddress       String?
+  userAgent       String?
+
+  timestamp       DateTime  @default(now())
+
+  @@index([userId])
+  @@index([entity, entityId])
+  @@index([timestamp])
+  @@map("audit_logs")
+}

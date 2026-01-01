@@ -1,0 +1,316 @@
+// Turk Dijital Metropol - Prisma Schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User authentication and profile
+model User {
+  id            String      @id @default(uuid())
+  email         String      @unique
+  username      String      @unique
+  password      String
+  displayName   String?
+  avatar        String?
+  role          UserRole    @default(PLAYER)
+  isActive      Boolean     @default(true)
+  isVerified    Boolean     @default(false)
+  lastLoginAt   DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  characters    Character[]
+  transactions  Transaction[]
+  sentMessages  ChatMessage[] @relation("SentMessages")
+  friendships   Friendship[]  @relation("UserFriendships")
+  friendOf      Friendship[]  @relation("FriendOf")
+  achievements  UserAchievement[]
+
+  @@index([email])
+  @@index([username])
+  @@map("users")
+}
+
+enum UserRole {
+  PLAYER
+  MODERATOR
+  ADMIN
+}
+
+// Player characters
+model Character {
+  id            String        @id @default(uuid())
+  userId        String
+  name          String        @unique
+  class         CharacterClass
+  level         Int           @default(1)
+  experience    Int           @default(0)
+  health        Int           @default(100)
+  maxHealth     Int           @default(100)
+  energy        Int           @default(100)
+  maxEnergy     Int           @default(100)
+
+  // Position in world
+  positionX     Float         @default(0)
+  positionY     Float         @default(0)
+  positionZ     Float         @default(0)
+  rotation      Float         @default(0)
+  currentZone   String        @default("spawn")
+
+  // Appearance
+  appearance    Json?
+
+  // Stats
+  strength      Int           @default(10)
+  agility       Int           @default(10)
+  intelligence  Int           @default(10)
+  charisma      Int           @default(10)
+
+  // Economy
+  balance       Int           @default(10000)
+
+  isOnline      Boolean       @default(false)
+  lastSeenAt    DateTime      @default(now())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  inventory     InventoryItem[]
+  sentMessages  ChatMessage[]
+  transactions  Transaction[] @relation("CharacterTransactions")
+
+  @@index([userId])
+  @@index([name])
+  @@index([isOnline])
+  @@map("characters")
+}
+
+enum CharacterClass {
+  ENTREPRENEUR
+  DEVELOPER
+  DESIGNER
+  MARKETER
+  TRADER
+}
+
+// Inventory system
+model InventoryItem {
+  id            String      @id @default(uuid())
+  characterId   String
+  itemType      ItemType
+  itemId        String
+  quantity      Int         @default(1)
+  metadata      Json?
+  equipped      Boolean     @default(false)
+  acquiredAt    DateTime    @default(now())
+
+  // Relations
+  character     Character   @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@index([characterId])
+  @@index([itemType])
+  @@map("inventory_items")
+}
+
+enum ItemType {
+  VEHICLE
+  PROPERTY
+  WEARABLE
+  CONSUMABLE
+  COLLECTIBLE
+  TOOL
+}
+
+// Economy and transactions
+model Transaction {
+  id            String            @id @default(uuid())
+  type          TransactionType
+  amount        Int
+  fromUserId    String?
+  toUserId      String?
+  fromCharacterId String?
+  toCharacterId String?
+  description   String?
+  metadata      Json?
+  status        TransactionStatus @default(COMPLETED)
+  createdAt     DateTime          @default(now())
+
+  // Relations
+  fromUser      User?             @relation(fields: [fromUserId], references: [id])
+  fromCharacter Character?        @relation("CharacterTransactions", fields: [fromCharacterId], references: [id])
+
+  @@index([fromUserId])
+  @@index([toUserId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("transactions")
+}
+
+enum TransactionType {
+  TRANSFER
+  PURCHASE
+  SALE
+  REWARD
+  PENALTY
+  DEPOSIT
+  WITHDRAWAL
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+// Chat system
+model ChatMessage {
+  id            String      @id @default(uuid())
+  userId        String
+  characterId   String?
+  roomId        String      @default("global")
+  content       String
+  type          MessageType @default(TEXT)
+  metadata      Json?
+  isDeleted     Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  user          User        @relation("SentMessages", fields: [userId], references: [id], onDelete: Cascade)
+  character     Character?  @relation(fields: [characterId], references: [id], onDelete: SetNull)
+  room          ChatRoom    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@index([roomId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("chat_messages")
+}
+
+model ChatRoom {
+  id            String        @id @default(uuid())
+  name          String
+  type          RoomType      @default(PUBLIC)
+  description   String?
+  maxMembers    Int           @default(100)
+  isActive      Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  messages      ChatMessage[]
+
+  @@index([type])
+  @@map("chat_rooms")
+}
+
+enum MessageType {
+  TEXT
+  EMOTE
+  SYSTEM
+  WHISPER
+}
+
+enum RoomType {
+  PUBLIC
+  PRIVATE
+  ZONE
+  PARTY
+}
+
+// World state
+model WorldState {
+  id            String      @id @default(uuid())
+  zone          String      @unique
+  state         Json
+  playerCount   Int         @default(0)
+  isActive      Boolean     @default(true)
+  lastUpdated   DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([zone])
+  @@index([isActive])
+  @@map("world_states")
+}
+
+// Achievements
+model Achievement {
+  id            String      @id @default(uuid())
+  key           String      @unique
+  name          String
+  description   String
+  category      String
+  icon          String?
+  points        Int         @default(10)
+  rarity        Rarity      @default(COMMON)
+  criteria      Json
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  userAchievements UserAchievement[]
+
+  @@index([category])
+  @@index([rarity])
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String      @id @default(uuid())
+  userId        String
+  achievementId String
+  progress      Int         @default(0)
+  completed     Boolean     @default(false)
+  completedAt   DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+  @@index([completed])
+  @@map("user_achievements")
+}
+
+enum Rarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+// Friendship system
+model Friendship {
+  id            String          @id @default(uuid())
+  userId        String
+  friendId      String
+  status        FriendshipStatus @default(PENDING)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  // Relations
+  user          User            @relation("UserFriendships", fields: [userId], references: [id], onDelete: Cascade)
+  friend        User            @relation("FriendOf", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, friendId])
+  @@index([userId])
+  @@index([status])
+  @@map("friendships")
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}

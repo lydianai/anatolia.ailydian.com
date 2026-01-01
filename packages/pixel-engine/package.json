@@ -1,0 +1,38 @@
+{
+  "name": "@turk-dijital-metropol/pixel-engine",
+  "version": "1.0.0",
+  "description": "High-performance PixiJS-based pixel art game engine for Turkish Digital Metropol",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "pixi.js": "^8.0.0",
+    "@pixi/sound": "^6.0.0",
+    "@pixi/particle-emitter": "^5.0.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.0"
+  },
+  "keywords": [
+    "pixi",
+    "game-engine",
+    "pixel-art",
+    "turkish",
+    "metropol"
+  ],
+  "author": "Turk Dijital Metropol",
+  "license": "MIT"
+}
