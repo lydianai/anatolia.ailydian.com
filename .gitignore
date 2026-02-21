@@ -65,3 +65,6 @@ next-env.d.ts
 
 # AILYDIAN Integration
 .AISystem/
+.env.*
+!.env.example
+.vercel/
