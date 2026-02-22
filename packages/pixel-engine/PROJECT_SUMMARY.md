@@ -6,7 +6,7 @@ Production-ready PixiJS 8 based pixel art game engine built specifically for **T
 ## Directory Structure
 
 ```
-/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/pixel-engine/
+/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/pixel-engine/
 ├── src/
 │   ├── core/                 # Core engine systems
 │   │   ├── Engine.ts         # Main engine with fixed timestep loop
@@ -234,8 +234,8 @@ See `example.ts` for a complete Istanbul-themed game with:
 
 ## File Paths
 
-All source files: `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/pixel-engine/src/`
-Built files: `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/pixel-engine/dist/`
+All source files: `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/pixel-engine/src/`
+Built files: `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/pixel-engine/dist/`
 
 ## Usage in Other Packages
 

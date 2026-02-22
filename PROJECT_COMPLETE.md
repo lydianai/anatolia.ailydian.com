@@ -554,7 +554,7 @@ Browser'da şu adresleri aç:
 
 ## 📁 PROJE DOSYALARI
 
-### Dizin: `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL`
+### Dizin: `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL`
 
 ```
 Toplam Dosya: 245+

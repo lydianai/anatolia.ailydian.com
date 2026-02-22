@@ -167,7 +167,7 @@
 
 ```bash
 # Repository kontrolü
-cd /Users/sardag/Desktop/PROJELER/anatolia.ailydian.com
+cd /Users/lydian/Desktop/PROJELER/anatolia.ailydian.com
 
 # Dependencies install
 npm install

@@ -11,7 +11,7 @@
 ### 1. Navigate to Frontend Directory
 
 ```bash
-cd /Users/sardag/Desktop/TURK-DIJITAL-METROPOL/apps/frontend
+cd /Users/lydian/Desktop/TURK-DIJITAL-METROPOL/apps/frontend
 ```
 
 ### 2. Install Dependencies
@@ -448,7 +448,7 @@ npm install
 
 You're all set to develop the frontend. Start by exploring the components and adding your custom features.
 
-**Frontend Location**: `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/apps/frontend`
+**Frontend Location**: `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/apps/frontend`
 
 **Main Files**:
 - `src/app/page.tsx` - Landing page

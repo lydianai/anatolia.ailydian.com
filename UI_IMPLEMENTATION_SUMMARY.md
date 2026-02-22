@@ -361,39 +361,39 @@ TÜRK DİJİTAL METROPOL için **dünyanın en premium, hareketli ve kültürel 
 ## Dosya Yolları (Absolute Paths)
 
 ### UI Kit Core
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/package.json`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/index.ts`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/README.md`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/package.json`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/index.ts`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/README.md`
 
 ### Theme System
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/theme/colors.ts`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/theme/typography.ts`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/theme/spacing.ts`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/theme/shadows.ts`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/theme/gradients.ts`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/theme/colors.ts`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/theme/typography.ts`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/theme/spacing.ts`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/theme/shadows.ts`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/theme/gradients.ts`
 
 ### Components
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Button/Button.tsx`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Card/Card.tsx`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Input/Input.tsx`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Modal/Modal.tsx`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Toast/Toast.tsx`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Avatar/Avatar.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Button/Button.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Card/Card.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Input/Input.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Modal/Modal.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Toast/Toast.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/components/Avatar/Avatar.tsx`
 
 ### Animations
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/animations/variants.ts`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/animations/variants.ts`
 
 ### Patterns
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/patterns/TurkishPatterns.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/packages/ui-kit/src/patterns/TurkishPatterns.tsx`
 
 ### Landing Page
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/apps/frontend/src/app/page.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/apps/frontend/src/app/page.tsx`
 
 ### Game HUD
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/apps/frontend/src/components/game/HUD/CharacterPanel.tsx`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/apps/frontend/src/components/game/HUD/QuestTracker.tsx`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/apps/frontend/src/components/game/HUD/Minimap.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/apps/frontend/src/components/game/HUD/CharacterPanel.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/apps/frontend/src/components/game/HUD/QuestTracker.tsx`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/apps/frontend/src/components/game/HUD/Minimap.tsx`
 
 ### Documentation
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/DESIGN_SYSTEM.md`
-- `/Users/sardag/Desktop/TURK-DIJITAL-METROPOL/UI_IMPLEMENTATION_SUMMARY.md`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/DESIGN_SYSTEM.md`
+- `/Users/lydian/Desktop/TURK-DIJITAL-METROPOL/UI_IMPLEMENTATION_SUMMARY.md`

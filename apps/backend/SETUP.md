@@ -16,7 +16,7 @@ redis-cli --version
 
 ### 2. Install Dependencies
 ```bash
-cd /Users/sardag/Desktop/TURK-DIJITAL-METROPOL/apps/backend
+cd /Users/lydian/Desktop/TURK-DIJITAL-METROPOL/apps/backend
 npm install
 ```
 

@@ -1,17 +1,58 @@
-# ANADOLU REALM - Turkish Digital Metropolis MMO
+<div align="center">
 
-> Pixel Art MMO Engine with Real-Time Economy and Turkish Cultural Heritage
+# Anadolu Realm - Turkish Digital Metropolis MMO
 
-[![License](https://img.shields.io/badge/license-Proprietary-red.svg)](LICENSE)
-[![Next.js](https://img.shields.io/badge/Next.js-15.x-black.svg)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.x-61dafb.svg)](https://react.dev/)
-[![PixiJS](https://img.shields.io/badge/PixiJS-8.x-e72264.svg)](https://pixijs.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791.svg)](https://www.postgresql.org/)
+<p><em>Pixel Art MMO with PixiJS 8 Engine, Real-Time Economy, and Authentic Turkish Cultural Heritage</em></p>
+
+<p>
+  <a href="#overview"><img src="https://img.shields.io/badge/Docs-Overview-blue?style=for-the-badge" alt="Overview"></a>
+  <a href="#game-architecture"><img src="https://img.shields.io/badge/Docs-Architecture-purple?style=for-the-badge" alt="Architecture"></a>
+  <a href="#key-features"><img src="https://img.shields.io/badge/Docs-Features-green?style=for-the-badge" alt="Features"></a>
+  <a href="#getting-started"><img src="https://img.shields.io/badge/Docs-Setup-orange?style=for-the-badge" alt="Setup"></a>
+</p>
+
+<p>
+  <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" alt="Status">
+  <img src="https://img.shields.io/badge/License-Proprietary-red?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js&logoColor=white" alt="Next.js">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/PixiJS-8.x-E72264?style=flat-square" alt="PixiJS">
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL">
+</p>
+
+<br>
+
+<table>
+<tr>
+<td width="50%">
+
+**Platform Highlights**
+- Living Istanbul recreation with full Anatolian expansion
+- 60 FPS hardware-accelerated PixiJS 8 pixel art rendering
+- Unlimited concurrent multiplayer via Socket.io engine
+- Fully functioning digital economy: jobs, real estate, trading
+
+</td>
+<td width="50%">
+
+**Technical Excellence**
+- 5 character classes with 150+ fluid animations each
+- Authentic Turkish mini-games: Tavla, Okey, and Batak
+- 30+ modular UI components with extensible architecture
+- PostgreSQL 16 with Prisma ORM for persistent game state
+
+</td>
+</tr>
+</table>
+
+</div>
+
+---
 
 ## Overview
 
-ANADOLU REALM is a living Turkish digital metropolis — an MMO simulation game that places players in a pixel art recreation of Istanbul and the broader Anatolian landscape. The game features a fully functioning digital economy, authentic Turkish mini-games, unlimited multiplayer via Socket.io, and 60 FPS rendering powered by PixiJS 8.
+Anadolu Realm is a living Turkish digital metropolis — an MMO simulation game that places players in a pixel art recreation of Istanbul and the broader Anatolian landscape. The game features a fully functioning digital economy, authentic Turkish mini-games, unlimited multiplayer via Socket.io, and 60 FPS rendering powered by PixiJS 8.
 
 ## Game Architecture
 
@@ -49,19 +90,18 @@ graph TD
 - **Digital Economy** — Jobs, real estate, trading system, and marketplace
 - **Social System** — In-game chat, friends list, guild formation, and marketplace
 
-## Technology Stack
+## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend Framework | Next.js 15, React 19 |
-| Game Engine | PixiJS 8 |
-| Animation | GSAP, Three.js |
-| Real-Time | Socket.io |
-| Database | PostgreSQL 16, Prisma ORM |
-| State Management | Zustand |
-| Language | TypeScript |
-| Build | Turborepo |
-| Container | Docker |
+| Layer | Technology | Badge |
+|:------|:-----------|:------|
+| Frontend Framework | Next.js 15, React 19 | ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js) ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black) |
+| Game Engine | PixiJS 8 | ![PixiJS](https://img.shields.io/badge/PixiJS-8-E72264?style=flat-square) |
+| Animation | GSAP, Three.js | ![GSAP](https://img.shields.io/badge/GSAP-latest-88CE02?style=flat-square) |
+| Real-Time | Socket.io | ![Socket.io](https://img.shields.io/badge/Socket.io-latest-black?style=flat-square&logo=socket.io) |
+| Database | PostgreSQL 16, Prisma ORM | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white) |
+| Language | TypeScript | ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white) |
+| Build | Turborepo | ![Turborepo](https://img.shields.io/badge/Turborepo-latest-EF4444?style=flat-square) |
+| Container | Docker | ![Docker](https://img.shields.io/badge/Docker-latest-2496ED?style=flat-square&logo=docker&logoColor=white) |
 
 ## Project Structure
 

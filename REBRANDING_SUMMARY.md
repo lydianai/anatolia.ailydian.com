@@ -96,7 +96,7 @@ powered by Lydian
 
 ### Start Development
 ```bash
-cd /Users/sardag/Desktop/TURK-DIJITAL-METROPOL
+cd /Users/lydian/Desktop/TURK-DIJITAL-METROPOL
 npm run dev:frontend
 ```
 

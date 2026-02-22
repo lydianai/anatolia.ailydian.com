@@ -315,7 +315,7 @@ Target Page → Full render
 ### Deployment Komutları
 ```bash
 # Build
-cd /Users/sardag/Desktop/PROJELER/anatolia.ailydian.com
+cd /Users/lydian/Desktop/PROJELER/anatolia.ailydian.com
 npm run build
 
 # Deploy (Vercel)
